@@ -24,7 +24,20 @@ int main(void)
 
 	config = iniciar_config();
 
+	// Obtener el valor de la clave "CLAVE" del archivo de configuración
+    valor = config_get_string_value(config, "CLAVE");
+
+	// Validar que la clave exista en el archivo de configuración
+    if (valor == NULL) {
+        log_error(logger, "No se encontró la clave 'CLAVE' en el archivo de configuración");
+        abort(); // Terminar el programa si no se encuentra la clave
+    }
+
+	// Loguear el valor obtenido
+    log_info(logger, "El valor de la clave CLAVE es: %s", valor);
+
 	// Usando el config creado previamente, leemos los valores del config y los 
+	
 	// dejamos en las variables 'ip', 'puerto' y 'valor'
 
 	// Loggeamos el valor de config
@@ -72,6 +85,15 @@ t_config* iniciar_config(void)
 {
 	t_config* nuevo_config;
 
+	// Crear el config a partir del archivo "cliente.config"
+    nuevo_config = config_create("cliente.config");
+
+    // Validar que el config se haya creado correctamente
+    if (nuevo_config == NULL) {
+        printf("No se pudo leer el archivo de configuración\n");
+        abort(); // Terminar el programa si no se puede cargar el config
+    }
+
 	return nuevo_config;
 }
 
@@ -109,6 +131,9 @@ void terminar_programa(int conexion, t_log* logger, t_config* config)
 
 	// Cerramos el logger
     log_destroy(logger);
+
+    // Liberar el config
+    config_destroy(config);
 
     // Liberamos otros recursos (conexion y config) según corresponda
 }
