@@ -45,14 +45,21 @@ int main(void)
 
 	/* ---------------- LEER DE CONSOLA ---------------- */
 
-	leer_consola(logger);
+	//leer_consola(logger);
 
 	/*---------------------------------------------------PARTE 3-------------------------------------------------------------*/
 
 	// ADVERTENCIA: Antes de continuar, tenemos que asegurarnos que el servidor esté corriendo para poder conectarnos a él
+	ip = config_get_string_value(config, "IP");
+	puerto = config_get_string_value(config, "PUERTO");
+	// Logueamos el valor de ip y puerto
+	log_info(logger, "IP: %s", ip);
+	log_info(logger, "Puerto: %s", puerto);
 
 	// Creamos una conexión hacia el servidor
-	conexion = crear_conexion(ip, puerto);
+	conexion = crear_conexion(ip, puerto, logger);
+
+	fprintf("Conectado al servidor %d\n",conexion);
 
 	// Enviamos al servidor el valor de CLAVE como mensaje
 
