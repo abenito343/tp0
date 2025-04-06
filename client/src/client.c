@@ -107,6 +107,22 @@ void leer_consola(t_log* logger)
 	// El resto, las vamos leyendo y logueando hasta recibir un string vacío
 
 
+	// Continuar leyendo y logueando hasta que se ingrese una línea vacía
+    while (strcmp(leido, "") != 0) {
+        // Loguear la línea ingresada
+        log_info(logger, "Se ingresó: %s", leido);
+
+        // Liberar la memoria de la línea leída
+        free(leido);
+
+        // Leer la siguiente línea
+        leido = readline("> ");
+    }
+
+    // Liberar la memoria de la última línea (vacía)
+    free(leido);
+
+
 	// ¡No te olvides de liberar las lineas antes de regresar!
 
 }
