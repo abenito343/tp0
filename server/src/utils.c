@@ -19,10 +19,14 @@ int iniciar_servidor(void)
 	getaddrinfo(NULL, PUERTO, &hints, &servinfo);
 
 	// Creamos el socket de escucha del servidor
+	// El socket se crea con la familia de direcciones, el tipo de socket y el protocolo
+    socket_servidor = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
 
 	// Asociamos el socket a un puerto
+    bind(socket_servidor, servinfo->ai_addr, servinfo->ai_addrlen);
 
 	// Escuchamos las conexiones entrantes
+	listen(socket_servidor, SOMAXCONN);
 
 	freeaddrinfo(servinfo);
 	log_trace(logger, "Listo para escuchar a mi cliente");
@@ -36,7 +40,18 @@ int esperar_cliente(int socket_servidor)
 //	assert(!"no implementado!");
 
 	// Aceptamos un nuevo cliente
-	int socket_cliente;
+
+	// Definimos la estructura sockaddr_in para almacenar la dirección del cliente
+ 	struct sockaddr_in dir_cliente;
+	
+	// y el tamaño de la dirección
+    socklen_t tam_direccion = sizeof(struct sockaddr_in);
+
+	// Aceptamos la conexión del cliente
+	// La función accept devuelve un nuevo socket que se usará para comunicarse con el cliente
+	// y la dirección del cliente se almacena en la estructura dir_cliente
+    int socket_cliente = accept(socket_servidor, (struct sockaddr*)&dir_cliente, &tam_direccion);
+
 	log_info(logger, "Se conecto un cliente!");
 
 	return socket_cliente;

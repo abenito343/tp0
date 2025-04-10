@@ -1,4 +1,6 @@
 #include "client.h"
+#include <commons/log.h>
+#include <commons/collections/list.h>
 
 int main(void)
 {
@@ -62,11 +64,18 @@ int main(void)
 	fprintf("Conectado al servidor %d\n",conexion);
 
 	// Enviamos al servidor el valor de CLAVE como mensaje
+	log_info(logger, "Enviando CLAVE al servidor...");
+	enviar_mensaje(valor, conexion);
 
 	// Armamos y enviamos el paquete
 	paquete(conexion);
 
 	terminar_programa(conexion, logger, config);
+
+	liberar_conexion(conexion);
+	
+	close(cliente_fd);
+	close(server_fd);
 
 	/*---------------------------------------------------PARTE 5-------------------------------------------------------------*/
 	// Proximamente
@@ -138,13 +147,23 @@ void paquete(int conexion)
 {
 	// Ahora toca lo divertido!
 	char* leido;
-	t_paquete* paquete;
+	t_paquete* paquete = crear_paquete();
 
 	// Leemos y esta vez agregamos las lineas al paquete
-
+	 while (1) {
+        leido = readline("> ");
+        if (strcmp(leido, "") == 0) {
+            free(leido);
+            break;
+        }
+        agregar_a_paquete(paquete, leido, strlen(leido) + 1);
+        free(leido);
+    }
 
 	// ¡No te olvides de liberar las líneas y el paquete antes de regresar!
-	
+	enviar_paquete(paquete, conexion);
+    eliminar_paquete(paquete);
+
 }
 
 void terminar_programa(int conexion, t_log* logger, t_config* config)
