@@ -9,7 +9,7 @@ int iniciar_servidor(void)
 
 	int socket_servidor;
 
-	struct addrinfo hints, *servinfo, *p;
+	struct addrinfo hints, *servinfo ;
 
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
@@ -21,6 +21,12 @@ int iniciar_servidor(void)
 	// Creamos el socket de escucha del servidor
 	// El socket se crea con la familia de direcciones, el tipo de socket y el protocolo
     socket_servidor = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
+
+	if (socket_servidor == -1) {
+	    log_error(logger, "No se pudo crear el socket del servidor");
+	    freeaddrinfo(servinfo);
+	    return -1;
+	}
 
 	// Asociamos el socket a un puerto
     bind(socket_servidor, servinfo->ai_addr, servinfo->ai_addrlen);

@@ -61,22 +61,30 @@ int main(void)
 	// Creamos una conexión hacia el servidor
 	conexion = crear_conexion(ip, puerto, logger);
 
-	fprintf("Conectado al servidor %d\n",conexion);
+	  if (conexion == -1) {
+        log_error(logger, "No se pudo establecer la conexión con el servidor");
+        abort();
+    }
+
+	log_info(logger, "Conexión establecida con el servidor.");
 
 	// Enviamos al servidor el valor de CLAVE como mensaje
 	log_info(logger, "Enviando CLAVE al servidor...");
 	enviar_mensaje(valor, conexion);
+	log_info(logger, "Se envió el valor de CLAVE al servidor: %s", valor);
 
 	// Armamos y enviamos el paquete
 	paquete(conexion);
+
+	log_info(logger, "Se cerró la conexión con el servidor.");	
 
 	terminar_programa(conexion, logger, config);
 
 	liberar_conexion(conexion);
 	
-	close(cliente_fd);
-	close(server_fd);
-
+	//close(cliente_fd);
+	//close(server_fd);
+	return 0;
 	/*---------------------------------------------------PARTE 5-------------------------------------------------------------*/
 	// Proximamente
 }
