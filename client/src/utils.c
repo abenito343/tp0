@@ -30,8 +30,8 @@ int crear_conexion(char *ip, char* puerto, t_log* logger)
 	// La función getaddrinfo toma como argumentos el nombre del host (ip),
 	// el puerto (puerto), un puntero a una estructura addrinfo que contiene
 	// la información de la dirección IP y el puerto, y un puntero a una lista
-	struct addrinfo hints;
-	struct addrinfo *server_info;
+	struct addrinfo hints, *server_info;
+	int socket_cliente;
 
 	memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
@@ -40,11 +40,13 @@ int crear_conexion(char *ip, char* puerto, t_log* logger)
 
 	err = getaddrinfo(ip, puerto, &hints, &server_info);
 
-	int socket_cliente = socket(hints.ai_family,
+	socket_cliente = socket(hints.ai_family,
 							hints.ai_socktype,
 							hints.ai_protocol);
 
-
+	//socket_cliente = socket(server_info->ai_family,
+	//						  server_info->ai_socktype, 	
+	//						  server_info->ai_protocol);
 	
 
 	// Ahora vamos a crear el socket.
